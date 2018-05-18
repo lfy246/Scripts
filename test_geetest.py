@@ -1,0 +1,35 @@
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+import drop_geetest
+import time
+
+driver = webdriver.Firefox(executable_path='F:\python\geckodriver.exe')
+driver.get("http://www.geetest.com/type/")
+driver.maximize_window()
+knob = driver.find_element_by_xpath("//*[@id='app']/div/ul/li[2]")
+time.sleep(1)
+knob.click()
+knob = driver.find_element_by_xpath("//*[@id='app']/section/div/ul/li[2]")
+time.sleep(1)
+knob.click()
+time.sleep(1)
+knob = driver.find_element_by_class_name("btn-login")
+knob.click()
+for i in range(10):
+    time.sleep(4)
+    former = driver.find_element_by_class_name("geetest_window")
+    former.screenshot("former.png")
+    time.sleep(2)
+    knob = driver.find_element_by_class_name("geetest_slider_button")
+    knob.click()
+    time.sleep(2)
+    after = driver.find_element_by_class_name("geetest_window")
+    after.screenshot("after.png")
+    offset = drop_geetest.count_offset().count_x('former.png', 'after.png')
+    print("计算出的偏移量是： ", offset)
+    time.sleep(1)
+    #drop_geetest.easing_slider().drag_and_drop(driver, offset)
+    knob = driver.find_element_by_class_name("geetest_slider_button")
+    ActionChains(driver).click_and_hold(knob).perform()
+    ActionChains(driver).move_by_offset(offset-68, 0).perform()
+    time.sleep(2)
